@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartInbox</title>
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            window.scrollTo({
+                top: section.offsetTop,
+                behavior: 'smooth'
+            });
+        }
+
+        function toggleLoginSignup(showSignup) {
+            const loginForm = document.getElementById("login-form");
+            const signupForm = document.getElementById("signup-form");
+            if (showSignup) {
+                loginForm.style.display = "none";
+                signupForm.style.display = "block";
+            } else {
+                signupForm.style.display = "none";
+                loginForm.style.display = "block";
+            }
+        }
+        function saveProfile() {
+            const name = document.getElementById("name").value;
+            const contact = document.getElementById("contact").value;
+            const email = document.getElementById("email").value;
+
+            if (name && contact && email) {
+                const profile = {
+                    name: name,
+                    contact: contact,
+                    email: email
+                };
+                localStorage.setItem("profile", JSON.stringify(profile));
+                localStorage.setItem("isSignedUp", "true");
+                alert("Profile saved successfully");
+                displayProfile();
+            } else {
+                alert("Please fill out all fields.");
+            }
+        }
+
+        function displayProfile() {
+            const profile = JSON.parse(localStorage.getItem("profile"));
+            if (profile) {
+                document.getElementById("profile-info").innerHTML = `<h3>Name: ${profile.name}</h3><p>Contact: ${profile.contact}</p><p>Email: ${profile.email}</p>`;
+                document.getElementById("profile-form").style.display = "none";
+            }
+        }
+
+        window.onload = function () {
+            const isSignedUp = localStorage.getItem("isSignedUp");
+            if (isSignedUp === "true") {
+                displayProfile();
+            }
+        };
+
+
+        function showEventDetails(eventTitle, eventDescription) {
+            const eventDescriptionBox = document.getElementById("event-description");
+            eventDescriptionBox.innerHTML = `<h3>${eventTitle}</h3><p>${eventDescription}</p>`;
+        }
+
+        function addEvent() {
+            const eventName = document.getElementById("event-name").value;
+            const eventDate = document.getElementById("event-date").value;
+            const eventDescription = document.getElementById("event-description-input").value;
+
+            if (eventName && eventDate && eventDescription) {
+                const newEvent = document.createElement("div");
+                newEvent.classList.add("event-item");
+                newEvent.innerHTML = `
+                    <h4>${eventName}</h4>
+                    <p>Date: ${eventDate}</p>
+                    <p>${eventDescription}</p>
+                `;
+                newEvent.onclick = function () {
+                    showEventDetails(eventName, eventDescription);
+                };
+
+                document.getElementById("events-list").appendChild(newEvent);
+                document.getElementById("event-name").value = "";
+                document.getElementById("event-date").value = "";
+                document.getElementById("event-description-input").value = "";
+            } else {
+                alert("Please fill in all fields.");
+            }
+        }
+
+        window.onload = function () {
+            const profile = JSON.parse(localStorage.getItem("profile"));
+            if (profile) {
+                document.getElementById("profile-info").innerHTML = `<h3>Name: ${profile.name}</h3><p>Contact: ${profile.contact}</p><p>Email: ${profile.email}</p>`;
+                document.getElementById("profile-form").style.display = "none";
+            }
+        };
+    </script>
+</head>
+
+<body>
+    <header>
+        <div id="logo">
+            <h1>SmartInbox</h1>
+        </div>
+        <nav>
+            <a href="#" onclick="scrollToSection('home')">Home</a>
+            <a href="#" onclick="scrollToSection('calendar')">Calendar</a>
+            <a href="#" onclick="scrollToSection('profile')">Profile</a>
+        </nav>
+    </header>
+
+    <div id="home" class="section">
+        <!-- One-liner about the event in huge text -->
+            <div class="home-content">
+                <h1 class="smart-inbox">SmartInbox</h1>
+                <p class="event-tagline">Revolutionizing the way you manage tasks and deadlines!</p>
+                <div class="looping-text">
+                    <div>Work calendar like a pro</div>
+                    <div>Get all your data in one place</div>
+                    <div>Add to your calendar through VTOP</div>
+                    <div>Events or Deadlines - you name it.</div>
+                </div>
+                
+                
+        <!-- Login/Signup Section -->
+        <div id="login-form">
+            <h2>Login</h2>
+            <input type="email" id="login-email" placeholder="Enter Email" required>
+            <input type="password" id="login-password" placeholder="Enter Password" required>
+            <button onclick="scrollToSection('calendar')">Login</button>
+            <p>Don't have an account? <a href="javascript:void(0);" onclick="toggleLoginSignup(true)">Sign up</a></p>
+        </div>
+
+        <div id="signup-form" style="display: none;">
+            <h2>Sign Up</h2>
+            <input type="text" id="name" placeholder="Enter Name" required>
+            <input type="text" id="contact" placeholder="Enter Contact Number" required>
+            <input type="email" id="email" placeholder="Enter Email" required>
+            <input type="password" id="signup-password" placeholder="Create Password" required>
+            <button onclick="saveProfile()">Sign Up</button>
+            <p>Already have an account? <a href="javascript:void(0);" onclick="toggleLoginSignup(false)">Login</a></p>
+        </div>
+    </div>
+
+    <!-- Calendar Section -->
+    <div id="calendar" class="section">
+        <div id="calendar-container">
+            <div id="left-panel">
+                <h3>Upcoming Events</h3>
+                <div id="events-list" class="scrollable-list">
+                    <!-- Sample Events -->
+                    <div class="event-item" onclick="showEventDetails('Hackathon Start', 'Event for all students to participate in the annual VIT Hackathon. Date: 2025-05-10.')">
+                        <h4>Hackathon Start</h4>
+                        <p>Date: 2025-05-10</p>
+                        <p>Event for all students to participate in the annual VIT Hackathon.</p>
+                    </div>
+                    <div class="event-item" onclick="showEventDetails('Review 1', 'Review session for subjects like Python, C/C++, and BEEE. Date: 2025-05-12.')">
+                        <h4>Review 1</h4>
+                        <p>Date: 2025-05-12</p>
+                        <p>Review session for subjects like Python, C/C++, and BEEE.</p>
+                    </div>
+                    <div class="event-item" onclick="showEventDetails('Assignment Deadlines', 'Important assignment deadlines for BEEE, Python, and C/C++. Date: 2025-05-15.')">
+                        <h4>Assignment Deadlines</h4>
+                        <p>Date: 2025-05-15</p>
+                        <p>Important assignment deadlines for BEEE, Python, and C/C++.</p>
+                    </div>
+                    <div class="event-item" onclick="showEventDetails('Hackathon End', 'Closing event for the VIT Hackathon. Date: 2025-05-20.')">
+                        <h4>Hackathon End</h4>
+                        <p>Date: 2025-05-20</p>
+                        <p>Closing event for the VIT Hackathon.</p>
+                    </div>
+                    <div class="event-item" onclick="showEventDetails('Review 2', 'Second review session for upcoming exams and assignments. Date: 2025-05-18.')">
+                        <h4>Review 2</h4>
+                        <p>Date: 2025-05-18</p>
+                        <p>Second review session for upcoming exams and assignments.</p>
+                    </div>
+                </div>
+
+                <!-- Add Event Form -->
+                <div id="add-event-form">
+                    <h3>Add Event</h3>
+                    <input type="text" id="event-name" placeholder="Event Name">
+                    <input type="date" id="event-date">
+                    <textarea id="event-description-input" placeholder="Event Description"></textarea>
+                    <button onclick="addEvent()">Add Event</button>
+                </div>
+            </div>
+
+            <div id="right-panel">
+                <iframe src="https://calendar.google.com/calendar/embed?height=600&wkst=1&ctz=Asia%2FKolkata&showPrint=0&src=Y19jbGFzc3Jvb21hYWVjZTViYkBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&src=ZW4uaW5kaWFuI2hvbGlkYXlAZ3JvdXAudi5jYWxlbmRhci5nb29nbGUuY29t&color=%23007b83&color=%230B8043"
+                    width="100%" height="600" frameborder="0" scrolling="no"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- Event Description Box -->
+    <div id="event-description">
+        <h3>Event Details</h3>
+        <p>Click on an event to view its details here.</p>
+    </div>
+
+    <!-- Profile Section -->
+    <div id="profile" class="section">
+        <h2>Profile</h2>
+        <div id="profile-info"></div>
+        <div id="profile-form">
+            <input type="text" id="name" placeholder="Enter Name">
+            <input type="text" id="contact" placeholder="Enter Contact Number">
+            <input type="email" id="email" placeholder="Enter Email">
+            <button onclick="saveProfile()">Save Profile</button>
+        </div>
+    </div>
+</body>
+
+</html>
